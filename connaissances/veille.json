@@ -1,0 +1,107 @@
+[
+    {
+        "domaine": "recuperation",
+        "api": "epmc",
+        "requete": "heart rate variability training monitoring"
+    },
+    {
+        "domaine": "recuperation",
+        "api": "openalex",
+        "requete": "sleep athlete recovery"
+    },
+    {
+        "domaine": "recuperation",
+        "api": "epmc",
+        "requete": "training load injury risk athletes"
+    },
+    {
+        "domaine": "recuperation",
+        "api": "openalex",
+        "requete": "overtraining syndrome recreational athletes"
+    },
+    {
+        "domaine": "recuperation",
+        "api": "epmc",
+        "requete": "heart rate variability guided endurance training"
+    },
+    {
+        "domaine": "recuperation",
+        "api": "openalex",
+        "requete": "post exercise recovery strategies"
+    },
+    {
+        "domaine": "recuperation",
+        "api": "epmc",
+        "requete": "wellness monitoring recreational athletes"
+    },
+    {
+        "domaine": "boxe",
+        "api": "openalex",
+        "requete": "amateur boxing physiology conditioning"
+    },
+    {
+        "domaine": "boxe",
+        "api": "epmc",
+        "requete": "boxing training load monitoring"
+    },
+    {
+        "domaine": "boxe",
+        "api": "openalex",
+        "requete": "combat sports strength conditioning recovery"
+    },
+    {
+        "domaine": "boxe",
+        "api": "epmc",
+        "requete": "punch force boxing performance"
+    },
+    {
+        "domaine": "boxe",
+        "api": "openalex",
+        "requete": "martial arts injury epidemiology"
+    },
+    {
+        "domaine": "course",
+        "api": "openalex",
+        "requete": "polarized training distribution running"
+    },
+    {
+        "domaine": "course",
+        "api": "epmc",
+        "requete": "novice runner injury incidence"
+    },
+    {
+        "domaine": "course",
+        "api": "epmc",
+        "requete": "running injury prevention program"
+    },
+    {
+        "domaine": "course",
+        "api": "openalex",
+        "requete": "walk run interval training beginners"
+    },
+    {
+        "domaine": "course",
+        "api": "openalex",
+        "requete": "running economy endurance training"
+    },
+    {
+        "domaine": "course",
+        "api": "epmc",
+        "requete": "running biomechanics injury risk"
+    },
+    {
+        "domaine": "course",
+        "api": "openalex",
+        "requete": "strength training distance runners"
+    },
+    {
+        "domaine": "course",
+        "api": "epmc",
+        "requete": "gait retraining running injury"
+    },
+    {
+        "domaine": "course",
+        "api": "openalex",
+        "requete": "trail running physiology performance"
+    }
+]

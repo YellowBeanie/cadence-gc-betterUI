@@ -1,0 +1,130 @@
+# Collector Garmin sur le serveur (<IP-DU-SERVEUR>).
+# Emplacement cible sur le NAS : ~/garmin-monitor/docker-compose.yml
+#
+# Convention :
+# un dossier par stack sous le foyer de l'utilisateur du stack, un compose par dossier.
+#
+#   ~/garmin-monitor/
+#   ├── docker-compose.yml   ← ce fichier
+#   ├── .env                 ← identifiants Garmin (chmod 600, hors git)
+#   ├── run.sh               ← wrapper appelé par le cron
+#   ├── build/               ← Dockerfile + entrypoint.sh + patches/
+#   └── data/                ← garmin.db, browser_profile/, fit/  (uid 1000)
+
+services:
+  # ── Sync quotidien (appelé par run.sh depuis le cron) ──────────────────
+  sync:
+    build: ./build
+    image: garmin-collector:local
+    container_name: garmin-sync
+    # uid/gid de l'utilisateur du stack : sans ça les fichiers seraient root-owned et
+    # restic les exclurait de la sauvegarde off-site.
+    user: "1000:1000"
+    env_file: [.env]
+    volumes:
+      - ./data:/work
+    # Chrome a besoin de son sandbox ; on ne peut pas lui passer --no-sandbox
+    # (l'outil construit le Driver lui-même), donc on relâche seccomp plutôt
+    # que de tourner en root.
+    security_opt:
+      - seccomp:unconfined
+    # /dev/shm par défaut (64 Mo) fait crasher Chrome de façon aléatoire.
+    shm_size: "1gb"
+    # Garde-fou N100 : cf. l'épisode Nextcloud qui avait fait grimper la charge à 16.
+    cpus: "2.5"
+    mem_limit: 3g
+    restart: "no"
+    command: ["sync"]
+
+  # ── Session interactive de login (MFA + captcha via VNC) ───────────────
+  # Lancement manuel uniquement :
+  #   docker compose run --rm --service-ports login
+  login:
+    build: ./build
+    image: garmin-collector:local
+    container_name: garmin-login
+    user: "1000:1000"
+    env_file: [.env]
+    volumes:
+      - ./data:/work
+    security_opt:
+      - seccomp:unconfined
+    shm_size: "1gb"
+    cpus: "2.5"
+    mem_limit: 3g
+    restart: "no"
+    # Loopback du NAS uniquement : on y accède par tunnel SSH, jamais par le
+    # tunnel Cloudflare (même posture que le port 9001 de l'agent Portainer).
+    ports:
+      - "127.0.0.1:5900:5900"
+    command: ["login"]
+
+  # ── Transcription locale d'un audio (saisie vocale, tâche 28) ───────────
+  # Conteneur à la demande, jamais un service permanent :
+  #   docker compose run --rm whisper /work/audio-saisies/entrants/<fichier>
+  # (appelé par traite-audio.sh). Modèle "small" téléchargé AU BUILD (couche
+  # cachée) : aucun accès réseau nécessaire au run.
+  whisper:
+    build: ./whisper
+    image: garmin-whisper:local
+    container_name: garmin-whisper
+    user: "1000:1000"
+    volumes:
+      - ./data:/work
+    cpus: "2"
+    mem_limit: 2g
+    restart: "no"
+
+  # Veilleur : exécute les syncs demandés par l'app.
+  # Aucun port publié, aucun accès au socket Docker — il n'en a pas besoin,
+  # c'est l'image du collector qui embarque déjà Chrome.
+  watcher:
+    build: ./build
+    image: garmin-collector:local
+    container_name: garmin-watcher
+    user: "1000:1000"
+    env_file: [.env]
+    volumes:
+      - ./data:/work
+    security_opt:
+      - seccomp:unconfined
+    shm_size: "1gb"
+    cpus: "2.5"
+    mem_limit: 3g
+    restart: unless-stopped
+    command: ["watch"]
+
+  # App d'entraînement. Exposée via le tunnel Cloudflare DERRIÈRE Access.
+  # Aucun accès au socket Docker : elle demande les syncs par fichier-drapeau,
+  # le service `watcher` les exécute.
+  app:
+    build: ./app
+    image: garmin-app:local
+    container_name: garmin-app
+    user: "1000:1000"
+    restart: unless-stopped
+    ports:
+      # Liaison interpolée depuis .env (APP_BIND/APP_PORT) — défaut 127.0.0.1 :
+      # des données de santé ne s'exposent jamais nues sur un réseau, on les
+      # sert en local et on publie par tunnel authentifié (cf. README).
+      - "${APP_BIND:-127.0.0.1}:${APP_PORT:-3001}:3000"
+    volumes:
+      # Écriture nécessaire : training.db et le drapeau de sync vivent ici.
+      # L'app ne lit que data/export/garmin-ro.db côté Garmin, jamais garmin.db.
+      - ./data:/work
+    environment:
+      GARMIN_DATA_DIR: /work
+      # Fuseau d'affichage des heures murales (tâche 49, correctif du bug des
+      # 2h d'écart) : le conteneur (image node:24-slim) n'a pas de fuseau par
+      # défaut autre qu'UTC. `app/lib/formatage.ts` lit cette même variable
+      # (repli Europe/Zurich si absente) — la positionner ici aligne aussi le
+      # fuseau par défaut du runtime Node pour tout le reste (logs, etc.).
+      TZ: Europe/Zurich
+    cpus: "1.5"
+    mem_limit: 768m
+
+# Grafana a été retiré le 2026-08-06 : l'app (spec 1) reprend la visualisation.
+# L'instantané data/export/garmin-ro.db reste produit après chaque sync — c'est
+# désormais l'app qui le lira en lecture seule.
+# Les requêtes SQL validées de l'ancien dashboard sont conservées dans
+# docs/requetes-garmin.md ; le dashboard complet reste dans l'historique git.

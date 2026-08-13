@@ -1,0 +1,4 @@
+# Dépendances d'extraction complètes (atelier PC) : HTML + PDF (docling) + YouTube (yt-dlp).
+trafilatura
+docling
+yt-dlp

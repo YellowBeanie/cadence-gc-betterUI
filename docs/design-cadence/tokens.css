@@ -1,0 +1,201 @@
+/* ===================================================================
+   MANA — Design Tokens : Color & Type
+   Swiss-minimal architecture studio. Monochrome paper/ink + warm
+   neutral scale + a single sparing clay accent. One grotesque family
+   for display/body/UI, a mono for technical labels & project metadata.
+   =================================================================== */
+
+/* --- Fonts ---------------------------------------------------------
+   SUBSTITUTION FLAG: the real manastudio.ch typeface is not exposed
+   to our tools. We substitute Google Fonts:
+     • "Archivo"     → primary grotesque (display + body + UI)
+     • "Space Mono"  → technical labels, captions, project metadata
+   Swap these for the studio's true faces when available (see README).
+------------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  /* ---- Brand palette : paper / ink ---- */
+  --paper:        #FFFFFF;   /* primary background, gallery white     */
+  --paper-warm:   #F6F4EF;   /* warm off-white panel / alt section    */
+  --ink:          #0E0E0C;   /* near-black, faintly warm — text & UI  */
+
+  /* ---- Warm neutral scale ---- */
+  --n-900: #161513;
+  --n-800: #2A2825;
+  --n-700: #46433E;
+  --n-600: #6B665F;
+  --n-500: #8E8881;
+  --n-400: #ADA79F;
+  --n-300: #CFC9C0;
+  --n-200: #E6E1D9;
+  --n-100: #F1EEE8;
+  --n-050: #F8F6F2;
+
+  /* ---- Accent : clay (architectural warmth, used sparingly) ---- */
+  --clay:       #B05E3B;
+  --clay-soft:  #C98563;
+  --clay-tint:  #F0E3DB;
+
+  /* ---- Semantic color roles ---- */
+  --bg:            var(--paper);
+  --bg-alt:        var(--paper-warm);
+  --fg1:           var(--ink);        /* primary text                 */
+  --fg2:           var(--n-600);      /* secondary text / captions    */
+  --fg3:           var(--n-500);      /* tertiary / metadata          */
+  --fg-invert:     var(--paper);      /* text on dark                 */
+  --line:          var(--n-200);      /* hairline rules & borders     */
+  --line-strong:   var(--n-300);
+  --accent:        var(--clay);
+  --accent-soft:   var(--clay-soft);
+  --surface-dark:  var(--n-900);      /* dark sections / footer       */
+
+  /* ---- Type families ---- */
+  --font-sans: "Archivo", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --font-mono: "Space Mono", "SFMono-Regular", ui-monospace, monospace;
+
+  /* ---- Type scale (1.250 major-third-ish, tuned for editorial) ---- */
+  --t-hero:    clamp(3rem, 8vw, 7.5rem);   /* oversized wordmark/hero  */
+  --t-display: clamp(2.25rem, 5vw, 4rem);  /* page titles              */
+  --t-h1:      2.5rem;
+  --t-h2:      1.875rem;
+  --t-h3:      1.375rem;
+  --t-body-lg: 1.25rem;
+  --t-body:    1.0625rem;
+  --t-small:   0.9375rem;
+  --t-label:   0.75rem;    /* mono labels, uppercase, tracked          */
+
+  /* ---- Weights ---- */
+  --w-regular: 400;
+  --w-medium:  500;
+  --w-semibold:600;
+  --w-bold:    700;
+
+  /* ---- Line heights ---- */
+  --lh-tight:  1.04;   /* big display                                  */
+  --lh-snug:   1.18;   /* headings                                     */
+  --lh-body:   1.62;   /* long-form FR copy                            */
+
+  /* ---- Tracking ---- */
+  --tr-tight:  -0.02em;   /* large display                             */
+  --tr-normal: 0;
+  --tr-label:  0.14em;    /* mono uppercase labels                     */
+
+  /* ---- Spacing scale (8px base) ---- */
+  --sp-1: 4px;   --sp-2: 8px;   --sp-3: 12px;  --sp-4: 16px;
+  --sp-5: 24px;  --sp-6: 32px;  --sp-7: 48px;  --sp-8: 64px;
+  --sp-9: 96px;  --sp-10: 128px; --sp-11: 192px;
+
+  /* ---- Radii (architectural: mostly square, tiny softening only) ---- */
+  --r-none: 0;
+  --r-sm:   2px;
+  --r-md:   4px;
+  --r-pill: 999px;
+
+  /* ---- Borders ---- */
+  --bd-hair: 1px solid var(--line);
+  --bd-ink:  1px solid var(--ink);
+
+  /* ---- Shadows (very restrained; gallery look favors flatness) ---- */
+  --shadow-none: none;
+  --shadow-sm:   0 1px 2px rgba(14,14,12,0.05);
+  --shadow-md:   0 8px 30px rgba(14,14,12,0.08);
+  --shadow-lg:   0 24px 60px rgba(14,14,12,0.12);
+
+  /* ---- Motion (a first-class foundation for this brand) ---- */
+  --ease-out:   cubic-bezier(0.16, 1, 0.3, 1);   /* signature reveal   */
+  --ease-inout: cubic-bezier(0.65, 0, 0.35, 1);
+  --dur-fast:   180ms;
+  --dur-base:   420ms;
+  --dur-slow:   720ms;
+  --dur-reveal: 1100ms;   /* image / hero reveals                      */
+  --layout-max: 1320px;
+  --gutter:     clamp(20px, 5vw, 64px);
+}
+
+/* ===================================================================
+   Semantic element styles — apply or @extend these in components.
+   =================================================================== */
+
+.h-hero {
+  font-family: var(--font-sans);
+  font-weight: var(--w-medium);
+  font-size: var(--t-hero);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-tight);
+  color: var(--fg1);
+}
+
+.h-display {
+  font-family: var(--font-sans);
+  font-weight: var(--w-medium);
+  font-size: var(--t-display);
+  line-height: var(--lh-tight);
+  letter-spacing: var(--tr-tight);
+  color: var(--fg1);
+}
+
+h1, .h1 {
+  font-family: var(--font-sans);
+  font-weight: var(--w-semibold);
+  font-size: var(--t-h1);
+  line-height: var(--lh-snug);
+  letter-spacing: var(--tr-tight);
+  color: var(--fg1);
+}
+
+h2, .h2 {
+  font-family: var(--font-sans);
+  font-weight: var(--w-semibold);
+  font-size: var(--t-h2);
+  line-height: var(--lh-snug);
+  color: var(--fg1);
+}
+
+h3, .h3 {
+  font-family: var(--font-sans);
+  font-weight: var(--w-medium);
+  font-size: var(--t-h3);
+  line-height: var(--lh-snug);
+  color: var(--fg1);
+}
+
+p, .p {
+  font-family: var(--font-sans);
+  font-weight: var(--w-regular);
+  font-size: var(--t-body);
+  line-height: var(--lh-body);
+  color: var(--fg2);
+  text-wrap: pretty;
+}
+
+.lead {
+  font-size: var(--t-body-lg);
+  line-height: var(--lh-body);
+  color: var(--fg1);
+}
+
+.small { font-size: var(--t-small); color: var(--fg2); }
+
+/* Mono technical label — project state, metadata, captions, coordinates */
+.label {
+  font-family: var(--font-mono);
+  font-weight: var(--w-regular);
+  font-size: var(--t-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  color: var(--fg3);
+}
+
+/* Lowercase nav item — the house nav style */
+.nav-item {
+  font-family: var(--font-sans);
+  font-weight: var(--w-regular);
+  font-size: var(--t-body);
+  text-transform: lowercase;
+  color: var(--fg1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }
+}

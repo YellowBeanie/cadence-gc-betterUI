@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/mana-design-system-4f634085-c560-4932-81a4-0f35c70af1ef/colors_and_type.css">
+  <link rel="stylesheet" href="_ds/mana-design-system-4f634085-c560-4932-81a4-0f35c70af1ef/ui_kits/website/colors_and_type.css">
+  <link rel="stylesheet" href="_ds/mana-design-system-4f634085-c560-4932-81a4-0f35c70af1ef/ui_kits/website/kit.css">
+  <script src="_ds/mana-design-system-4f634085-c560-4932-81a4-0f35c70af1ef/_ds_bundle.js"></script>
+  <style>
+    body{margin:0;background:var(--paper);color:var(--fg1);font-family:var(--font-sans)}
+    a{color:var(--ink);text-decoration:none}
+    a:hover{color:var(--clay)}
+    @keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+  </style>
+</helmet>
+<div style="min-height:100vh;background:var(--paper);display:flex;flex-direction:column">
+  <header style="display:flex;align-items:center;justify-content:space-between;padding:20px var(--gutter);border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(255,255,255,.85);backdrop-filter:blur(14px);z-index:50">
+    <div onClick="{{ goDash }}" style="font-size:23px;font-weight:500;letter-spacing:-0.02em;cursor:pointer">cadence</div>
+    <nav style="display:flex;gap:32px;align-items:center">
+      <span class="navlink" onClick="{{ goDash }}" data-active="{{ isDash }}" style="{{ navDashStyle }}">today</span>
+      <span class="navlink" onClick="{{ goActivities }}" style="{{ navActStyle }}">activities</span>
+      <span class="navlink" onClick="{{ goInsights }}" style="{{ navInsStyle }}">insights</span>
+      <span class="label" style="display:flex;align-items:center;gap:8px;font-size:10px">
+        <span style="width:6px;height:6px;border-radius:999px;background:var(--clay);display:inline-block"></span>
+        garmin · synced 08:12
+      </span>
+    </nav>
+  </header>
+
+  <sc-if value="{{ showDash }}" hint-placeholder-val="{{ true }}">
+  <main data-screen-label="Dashboard" style="animation:fadeUp var(--dur-slow) var(--ease-out) both">
+    <section style="max-width:var(--layout-max);margin:0 auto;padding:clamp(56px,9vh,110px) var(--gutter) clamp(40px,6vh,72px);width:100%;box-sizing:border-box">
+      <div class="label">Sat 09 Aug 2026 — Morning Report.</div>
+      <div style="display:flex;flex-wrap:wrap;align-items:flex-end;gap:clamp(32px,6vw,90px);margin-top:18px">
+        <div>
+          <div style="font-size:clamp(6rem,15vw,12rem);font-weight:700;letter-spacing:-0.04em;line-height:.88;color:var(--ink)">78</div>
+          <div style="display:flex;align-items:baseline;gap:14px;margin-top:16px">
+            <span class="label" style="color:var(--ink)">Body Battery</span>
+            <span class="label" style="color:var(--clay)">+12 overnight</span>
+          </div>
+        </div>
+        <p style="max-width:38ch;font-size:1.15rem;line-height:1.6;color:var(--fg2);margin:0 0 8px">
+          Recovery is nearly complete. Yesterday's trail effort has been absorbed —
+          today suits a moderate aerobic run or a long hike.
+        </p>
+      </div>
+    </section>
+
+    <section style="border-top:1px solid var(--line)">
+      <div style="max-width:var(--layout-max);margin:0 auto;padding:0 var(--gutter);display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))">
+        <sc-for list="{{ metrics }}" as="m" hint-placeholder-count="6">
+          <div style="padding:clamp(24px,3vw,40px) clamp(18px,2vw,32px);border-right:1px solid var(--line)">
+            <div class="label" style="font-size:10px">{{ m.label }}</div>
+            <div style="display:flex;align-items:baseline;gap:6px;margin-top:14px">
+              <span style="font-size:clamp(2.6rem,4vw,3.6rem);font-weight:700;letter-spacing:-0.03em;line-height:1;color:var(--ink)">{{ m.value }}</span>
+              <span style="font-family:var(--font-mono);font-size:12px;color:var(--fg3)">{{ m.unit }}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px">
+              <span style="font-family:var(--font-mono);font-size:11px;color:{{ m.deltaColor }}">{{ m.delta }}</span>
+              <svg width="72" height="22" viewBox="0 0 72 22" style="display:block"><polyline points="{{ m.spark }}" fill="none" stroke="#0E0E0C" stroke-width="1.25"></polyline></svg>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section style="border-top:1px solid var(--line);background:var(--paper-warm)">
+      <div style="max-width:var(--layout-max);margin:0 auto;padding:clamp(48px,7vh,80px) var(--gutter)">
+        <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:clamp(32px,6vw,90px);align-items:end">
+          <div>
+            <div class="label">7-Day Training Load.</div>
+            <div style="display:flex;align-items:baseline;gap:12px;margin-top:14px">
+              <span style="font-size:clamp(3.4rem,6vw,5.4rem);font-weight:700;letter-spacing:-0.035em;line-height:1">612</span>
+              <span style="font-family:var(--font-mono);font-size:12px;color:var(--fg3)">optimal 480–780</span>
+            </div>
+            <p style="font-size:1rem;line-height:1.62;color:var(--fg2);max-width:36ch;margin:20px 0 0">
+              Load sits in the productive zone. One more quality session this week keeps the ramp within range.
+            </p>
+          </div>
+          <div>
+            <div style="display:flex;align-items:flex-end;gap:clamp(8px,1.4vw,18px);height:150px">
+              <sc-for list="{{ loadDays }}" as="d" hint-placeholder-count="7">
+                <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;height:100%">
+                  <div style="height:{{ d.h }}%;background:{{ d.color }};transition:height var(--dur-slow) var(--ease-out)"></div>
+                  <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg3);text-align:center">{{ d.day }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="border-top:1px solid var(--line)">
+      <div style="max-width:var(--layout-max);margin:0 auto;padding:clamp(48px,7vh,80px) var(--gutter)">
+        <div style="display:flex;justify-content:space-between;align-items:baseline">
+          <h2 style="font-size:clamp(1.8rem,3.4vw,2.6rem);font-weight:500;letter-spacing:-0.025em;margin:0">Recent Activities.</h2>
+          <span class="label">running · hiking</span>
+        </div>
+        <div style="margin-top:28px">
+          <sc-for list="{{ activities }}" as="a" hint-placeholder-count="4">
+            <div class="work-row" onClick="{{ a.open }}" style="align-items:baseline">
+              <span class="idx">{{ a.idx }}</span>
+              <span class="nm" style="font-size:clamp(1.4rem,3vw,2.2rem)">{{ a.name }}</span>
+              <span style="font-family:var(--font-mono);font-size:12px;color:var(--fg2);flex:none;min-width:80px;text-align:right">{{ a.dist }}</span>
+              <span class="st">{{ a.sport }} · {{ a.date }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section style="border-top:1px solid var(--line);background:var(--surface-dark);color:var(--paper)">
+      <div style="max-width:var(--layout-max);margin:0 auto;padding:clamp(48px,7vh,80px) var(--gutter)">
+        <div class="label" style="color:var(--n-500)">Layers — Connected Tools.</div>
+        <div style="margin-top:24px">
+          <sc-for list="{{ tools }}" as="t" hint-placeholder-count="4">
+            <div onClick="{{ t.open }}" style="display:flex;justify-content:space-between;align-items:baseline;gap:24px;padding:20px 0;border-top:1px solid rgba(255,255,255,.14);cursor:pointer">
+              <span style="font-size:clamp(1.2rem,2.2vw,1.7rem);font-weight:500;letter-spacing:-0.02em;color:var(--paper)">{{ t.name }}</span>
+              <span style="font-size:.95rem;color:var(--n-400);flex:1">{{ t.desc }}</span>
+              <span style="font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:{{ t.stColor }}">{{ t.status }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ showActivity }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="Activity detail" style="animation:fadeUp var(--dur-slow) var(--ease-out) both">
+    <section style="max-width:var(--layout-max);margin:0 auto;padding:clamp(48px,7vh,80px) var(--gutter) 0;width:100%;box-sizing:border-box">
+      <span class="link-arrow" onClick="{{ goDash }}" style="font-family:var(--font-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase">← Back</span>
+      <div class="label" style="margin-top:36px">{{ act.sport }} — {{ act.date }} · {{ act.place }}</div>
+      <h1 style="font-size:clamp(2.4rem,6vw,4.6rem);font-weight:500;letter-spacing:-0.03em;line-height:1;margin:14px 0 0">'{{ act.name }}'</h1>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:0;margin-top:clamp(36px,5vh,56px);border-top:1px solid var(--line)">
+        <sc-for list="{{ actStats }}" as="s" hint-placeholder-count="4">
+          <div style="padding:28px 24px 28px 0;border-right:1px solid var(--line)">
+            <div class="label" style="font-size:10px">{{ s.k }}</div>
+            <div style="display:flex;align-items:baseline;gap:5px;margin-top:12px">
+              <span style="font-size:clamp(2.4rem,4.4vw,3.8rem);font-weight:700;letter-spacing:-0.035em;line-height:1">{{ s.v }}</span>
+              <span style="font-family:var(--font-mono);font-size:12px;color:var(--fg3)">{{ s.u }}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section style="max-width:var(--layout-max);margin:0 auto;padding:clamp(40px,6vh,64px) var(--gutter) 0;width:100%;box-sizing:border-box">
+      <div style="display:flex;justify-content:space-between;align-items:baseline">
+        <span class="label">Heart Rate · Pace — full session</span>
+        <span style="font-family:var(--font-mono);font-size:11px;color:var(--fg3)"><span style="color:var(--clay)">—</span> HR &nbsp;&nbsp;<span style="color:var(--ink)">—</span> pace</span>
+      </div>
+      <svg viewBox="0 0 800 200" style="width:100%;height:auto;display:block;margin-top:18px" preserveAspectRatio="none">
+        <line x1="0" y1="50" x2="800" y2="50" stroke="#E6E1D9" stroke-width="1"></line>
+        <line x1="0" y1="100" x2="800" y2="100" stroke="#E6E1D9" stroke-width="1"></line>
+        <line x1="0" y1="150" x2="800" y2="150" stroke="#E6E1D9" stroke-width="1"></line>
+        <polyline points="{{ paceLine }}" fill="none" stroke="#0E0E0C" stroke-width="1.5"></polyline>
+        <polyline points="{{ hrLine }}" fill="none" stroke="#B05E3B" stroke-width="1.5"></polyline>
+      </svg>
+      <div style="display:flex;justify-content:space-between;font-family:var(--font-mono);font-size:10px;letter-spacing:.1em;color:var(--fg3);margin-top:8px;text-transform:uppercase">
+        <span>0 km</span><span>{{ act.mid }}</span><span>{{ act.dist }}</span>
+      </div>
+    </section>
+
+    <section style="max-width:var(--layout-max);margin:0 auto;padding:clamp(48px,7vh,80px) var(--gutter) 0;width:100%;box-sizing:border-box">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,90px)">
+        <div>
+          <div class="label">Splits.</div>
+          <div style="margin-top:18px">
+            <sc-for list="{{ splits }}" as="sp" hint-placeholder-count="5">
+              <div style="display:flex;align-items:center;gap:18px;padding:12px 0;border-top:1px solid var(--line)">
+                <span style="font-family:var(--font-mono);font-size:12px;color:var(--fg3);width:28px">{{ sp.km }}</span>
+                <div style="flex:1;height:8px;background:var(--n-100);position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:{{ sp.w }}%;background:var(--ink)"></div></div>
+                <span style="font-size:1.05rem;font-weight:600;width:52px;text-align:right">{{ sp.pace }}</span>
+                <span style="font-family:var(--font-mono);font-size:11px;color:var(--clay);width:44px;text-align:right">{{ sp.hr }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="background:var(--paper-warm);padding:clamp(28px,4vw,44px);align-self:start">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <span class="label" style="color:var(--clay)">AI Analysis — Layer.</span>
+            <span style="font-family:var(--font-mono);font-size:10px;color:var(--fg3)">CLAUDE · 08:14</span>
+          </div>
+          <p style="font-size:1.05rem;line-height:1.62;color:var(--fg1);margin:18px 0 0">{{ act.ai1 }}</p>
+          <p style="font-size:1.05rem;line-height:1.62;color:var(--fg2);margin:14px 0 0">{{ act.ai2 }}</p>
+          <span class="link-arrow" onClick="{{ goInsights }}" style="margin-top:24px">Full analysis <svg width="14" height="10" viewBox="0 0 14 10"><path d="M0 5h12M8 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.25"></path></svg></span>
+        </div>
+      </div>
+      <div style="height:clamp(56px,9vh,100px)"></div>
+    </section>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ showInsights }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="AI insights" style="animation:fadeUp var(--dur-slow) var(--ease-out) both">
+    <section style="max-width:var(--layout-max);margin:0 auto;padding:clamp(56px,9vh,110px) var(--gutter) 0;width:100%;box-sizing:border-box">
+      <div class="label">Week 32 — AI Review.</div>
+      <h1 style="font-size:clamp(2.4rem,6vw,4.6rem);font-weight:500;letter-spacing:-0.03em;line-height:1.02;margin:14px 0 0;max-width:22ch">Aerobic base is building. Hold the ramp, feed the long runs.</h1>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-top:clamp(36px,5vh,56px);border-top:1px solid var(--line)">
+        <sc-for list="{{ weekStats }}" as="w" hint-placeholder-count="4">
+          <div style="padding:28px 24px 28px 0;border-right:1px solid var(--line)">
+            <div class="label" style="font-size:10px">{{ w.k }}</div>
+            <div style="display:flex;align-items:baseline;gap:5px;margin-top:12px">
+              <span style="font-size:clamp(2.4rem,4.4vw,3.8rem);font-weight:700;letter-spacing:-0.035em;line-height:1">{{ w.v }}</span>
+              <span style="font-family:var(--font-mono);font-size:12px;color:var(--fg3)">{{ w.u }}</span>
+            </div>
+            <div style="font-family:var(--font-mono);font-size:11px;color:{{ w.c }};margin-top:12px">{{ w.d }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section style="max-width:var(--layout-max);margin:0 auto;padding:clamp(48px,7vh,80px) var(--gutter) 0;width:100%;box-sizing:border-box">
+      <div class="label">Fitness Trend — 8 Weeks.</div>
+      <div style="display:flex;align-items:flex-end;gap:clamp(10px,1.6vw,22px);height:180px;margin-top:24px">
+        <sc-for list="{{ weeks }}" as="wk" hint-placeholder-count="8">
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;height:100%">
+            <div style="font-family:var(--font-mono);font-size:10px;color:var(--fg3);text-align:center">{{ wk.v }}</div>
+            <div style="height:{{ wk.h }}%;background:{{ wk.color }}"></div>
+            <div style="font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;color:var(--fg3);text-align:center">{{ wk.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section style="border-top:1px solid var(--line);margin-top:clamp(48px,7vh,80px)">
+      <div style="max-width:var(--layout-max);margin:0 auto;padding:clamp(48px,7vh,80px) var(--gutter)">
+        <h2 style="font-size:clamp(1.8rem,3.4vw,2.6rem);font-weight:500;letter-spacing:-0.025em;margin:0">This Week's Guidance.</h2>
+        <div style="margin-top:28px">
+          <sc-for list="{{ guidance }}" as="g" hint-placeholder-count="3">
+            <div style="display:grid;grid-template-columns:200px 1fr auto;gap:clamp(20px,3vw,48px);align-items:baseline;padding:26px 0;border-top:1px solid var(--line)">
+              <span class="label" style="color:var(--clay)">{{ g.tool }}</span>
+              <div>
+                <div style="font-size:clamp(1.2rem,2.2vw,1.6rem);font-weight:500;letter-spacing:-0.015em">{{ g.title }}</div>
+                <p style="font-size:1rem;line-height:1.6;color:var(--fg2);margin:8px 0 0;max-width:64ch">{{ g.body }}</p>
+              </div>
+              <span class="st" style="font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg3)">{{ g.tag }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+  </main>
+  </sc-if>
+
+  <footer style="background:var(--surface-dark);color:var(--paper);padding:clamp(40px,6vh,64px) var(--gutter) 32px;margin-top:auto">
+    <div style="display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px;max-width:var(--layout-max);margin:0 auto">
+      <div style="font-size:clamp(2rem,5vw,3.4rem);font-weight:500;letter-spacing:-0.03em;line-height:.95">cadence<small style="display:block;color:var(--n-500);font-size:inherit">.app</small></div>
+      <div style="font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;color:var(--n-500);text-align:right">a layer over garmin connect<br>data © you, always</div>
+    </div>
+  </footer>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1440}}">
+class Component extends DCLogic {
+  state = { screen: 'dash', actIdx: 0 };
+  go(screen, actIdx) {
+    this.setState({ screen, actIdx: actIdx ?? this.state.actIdx });
+    window.scrollTo(0, 0);
+  }
+  renderVals() {
+    const { screen, actIdx } = this.state;
+    const accent = '#B05E3B', ink = '#0E0E0C', n300 = '#CFC9C0', n600 = '#6B665F';
+    const spark = (vals) => vals.map((v, i) => `${(i / (vals.length - 1)) * 72},${20 - v * 18}`).join(' ');
+    const metrics = [
+      { label: 'VO2max', value: '52', unit: 'ml/kg/min', delta: '+1 this month', deltaColor: accent, spark: spark([.3,.35,.4,.38,.5,.6,.72,.8]) },
+      { label: 'Resting HR', value: '46', unit: 'bpm', delta: '−2 vs avg', deltaColor: accent, spark: spark([.7,.65,.6,.62,.5,.45,.4,.35]) },
+      { label: 'Training Load', value: '612', unit: '7d', delta: 'optimal', deltaColor: n600, spark: spark([.2,.3,.45,.4,.55,.6,.7,.68]) },
+      { label: 'Sleep Score', value: '84', unit: '/100', delta: '7h 42m', deltaColor: n600, spark: spark([.5,.6,.55,.7,.65,.75,.8,.85]) },
+      { label: 'Calories', value: '2 140', unit: 'kcal/day', delta: 'target 2 300', deltaColor: n600, spark: spark([.6,.5,.7,.65,.55,.6,.5,.45]) },
+      { label: 'Recovery', value: '9', unit: 'hrs left', delta: 'ready tonight', deltaColor: accent, spark: spark([.9,.8,.7,.6,.5,.4,.3,.2]) },
+    ];
+    const loadDays = [
+      { day: 'Mon', h: 34, color: ink }, { day: 'Tue', h: 0.5, color: n300 },
+      { day: 'Wed', h: 58, color: ink }, { day: 'Thu', h: 22, color: ink },
+      { day: 'Fri', h: 0.5, color: n300 }, { day: 'Sat', h: 88, color: accent },
+      { day: 'Sun', h: 12, color: n300 },
+    ];
+    const actsData = [
+      { name: 'Trail du Jorat', sport: 'Trail Run', date: 'Today', place: 'Lausanne, VD', dist: '14.2 km',
+        stats: [{k:'Distance',v:'14.2',u:'km'},{k:'Time',v:'1:24',u:'h'},{k:'Avg Pace',v:'5:57',u:'/km'},{k:'Ascent',v:'486',u:'m D+'},{k:'Avg HR',v:'152',u:'bpm'}],
+        mid: '7 km',
+        ai1: 'Strong aerobic control on the climbs — HR stayed under threshold on all but the final 400 m ascent. Decoupling was 4.1%, your best on this route.',
+        ai2: 'The last two splits show cadence dropping with fatigue. A short hill-strides block would protect late-race form.',
+        splits: [{km:'1',pace:'6:12',hr:'138',w:62},{km:'2',pace:'5:48',hr:'149',w:74},{km:'3',pace:'6:35',hr:'156',w:52},{km:'4',pace:'5:41',hr:'151',w:78},{km:'5',pace:'5:52',hr:'150',w:72},{km:'6',pace:'6:48',hr:'158',w:46},{km:'7',pace:'5:39',hr:'153',w:80}],
+        hr: [.35,.45,.5,.55,.5,.62,.66,.6,.7,.75,.68,.72,.8,.74,.7], pace: [.5,.6,.55,.42,.5,.36,.4,.52,.44,.38,.5,.42,.3,.44,.5] },
+      { name: 'Tempo — Vidy', sport: 'Run', date: 'Aug 7', place: 'Lausanne, VD', dist: '10.0 km',
+        stats: [{k:'Distance',v:'10.0',u:'km'},{k:'Time',v:'44:50',u:'min'},{k:'Avg Pace',v:'4:29',u:'/km'},{k:'Avg HR',v:'164',u:'bpm'}],
+        mid: '5 km',
+        ai1: 'Even pacing through the tempo block — splits 3–8 within a 6-second band. Lactate threshold pace is trending faster: 4:29 today vs 4:36 four weeks ago.',
+        ai2: 'HR drift in the final 2 km suggests hydration cost in the heat; pre-cool before the next hard session.',
+        splits: [{km:'1',pace:'4:51',hr:'148',w:68},{km:'2',pace:'4:32',hr:'160',w:82},{km:'3',pace:'4:28',hr:'164',w:86},{km:'4',pace:'4:27',hr:'165',w:87},{km:'5',pace:'4:30',hr:'166',w:84},{km:'6',pace:'4:26',hr:'168',w:88}],
+        hr: [.3,.5,.6,.68,.7,.72,.72,.74,.75,.76,.78,.8,.82,.8,.76], pace: [.6,.42,.36,.34,.33,.35,.32,.34,.33,.35,.34,.32,.36,.4,.5] },
+      { name: 'Rochers-de-Naye', sport: 'Hike', date: 'Aug 5', place: 'Montreux, VD', dist: '11.8 km',
+        stats: [{k:'Distance',v:'11.8',u:'km'},{k:'Time',v:'3:52',u:'h'},{k:'Ascent',v:'1 620',u:'m D+'},{k:'Avg HR',v:'128',u:'bpm'}],
+        mid: '6 km',
+        ai1: 'A big vertical day at genuinely easy intensity — 92% of time in Zone 1–2. Perfect base stimulus with minimal recovery cost.',
+        ai2: 'Descent pace was conservative; eccentric load stayed low, so no adjustment needed to this week’s plan.',
+        splits: [{km:'2',pace:'18:40',hr:'122',w:40},{km:'4',pace:'21:05',hr:'131',w:32},{km:'6',pace:'23:50',hr:'134',w:26},{km:'8',pace:'19:22',hr:'126',w:38},{km:'10',pace:'14:08',hr:'118',w:56}],
+        hr: [.3,.38,.42,.48,.52,.55,.58,.6,.56,.52,.48,.42,.38,.34,.3], pace: [.7,.6,.55,.5,.45,.4,.38,.36,.42,.48,.55,.62,.68,.72,.75] },
+      { name: 'Easy — Sauvabelin', sport: 'Run', date: 'Aug 4', place: 'Lausanne, VD', dist: '8.1 km',
+        stats: [{k:'Distance',v:'8.1',u:'km'},{k:'Time',v:'45:12',u:'min'},{k:'Avg Pace',v:'5:35',u:'/km'},{k:'Avg HR',v:'134',u:'bpm'}],
+        mid: '4 km',
+        ai1: 'Textbook recovery run — HR fully decoupled from pace, average 134 bpm at 5:35/km. Aerobic efficiency at this intensity is up 6% since June.',
+        ai2: 'Nothing to change. Keep these genuinely easy; they are doing their job.',
+        splits: [{km:'1',pace:'5:44',hr:'128',w:66},{km:'2',pace:'5:38',hr:'132',w:70},{km:'3',pace:'5:31',hr:'134',w:73},{km:'4',pace:'5:36',hr:'135',w:71},{km:'5',pace:'5:29',hr:'136',w:74}],
+        hr: [.35,.4,.44,.46,.48,.5,.5,.52,.52,.54,.54,.55,.55,.56,.55], pace: [.55,.52,.5,.48,.5,.47,.46,.48,.45,.47,.46,.44,.46,.48,.5] },
+    ];
+    const line = (vals) => vals.map((v, i) => `${(i / (vals.length - 1)) * 800},${190 - v * 180}`).join(' ');
+    const act = actsData[actIdx];
+    const tools = [
+      { name: 'Garmin Connect', desc: 'Source of truth — activities, sleep, Body Battery', status: 'synced', stColor: '#C98563' },
+      { name: 'AI Analysis', desc: 'Session reviews, trends, decoupling & readiness', status: 'active', stColor: '#C98563' },
+      { name: 'Food Advisor', desc: 'Fuelling & weight-loss guidance from real burn data', status: 'active', stColor: '#C98563' },
+      { name: 'Muscle Program', desc: 'Strength blocks matched to your run volume', status: 'connect', stColor: '#8E8881' },
+    ];
+    const weeks = ['W25','W26','W27','W28','W29','W30','W31','W32'].map((label, i) => {
+      const v = [385, 420, 460, 310, 495, 540, 580, 612][i];
+      return { label, v: String(v), h: (v / 700) * 100, color: i === 7 ? accent : ink };
+    });
+    const navStyle = (on) => on ? 'color:#B05E3B' : '';
+    return {
+      showDash: screen === 'dash', showActivity: screen === 'activity', showInsights: screen === 'insights',
+      isDash: screen === 'dash',
+      navDashStyle: navStyle(screen === 'dash'), navActStyle: navStyle(screen === 'activity'), navInsStyle: navStyle(screen === 'insights'),
+      goDash: () => this.go('dash'),
+      goActivities: () => this.go('dash'),
+      goInsights: () => this.go('insights'),
+      metrics, loadDays, tools, weeks,
+      activities: actsData.map((a, i) => ({ ...a, idx: String(i + 1).padStart(2, '0'), open: () => this.go('activity', i) })),
+      act, actStats: act.stats, splits: act.splits,
+      hrLine: line(act.hr), paceLine: line(act.pace),
+      weekStats: [
+        { k: 'Volume', v: '44.1', u: 'km', d: '+8% vs W31', c: accent },
+        { k: 'Vertical', v: '2 106', u: 'm D+', d: 'biggest week yet', c: accent },
+        { k: 'Time in Z2', v: '68', u: '%', d: 'on target', c: n600 },
+        { k: 'Weight', v: '74.8', u: 'kg', d: '−0.4 this week', c: n600 },
+      ],
+      guidance: [
+        { tool: 'Training Prep', title: 'Wednesday — 6 × 3 min at threshold', tag: 'planned', body: 'Load has room for one quality session. Threshold repeats on flat ground; keep HR under 168 and full 90-second recoveries.' },
+        { tool: 'Food Advisor', title: 'Fuel the Saturday long run, cut midweek snacking', tag: 'adjusted', body: 'Deficit is on track at ~350 kcal/day. Add 60 g carbs before Saturday’s trail run — under-fuelled long runs are stalling the fat-loss trend, not helping it.' },
+        { tool: 'Muscle Program', title: 'Block 2 — single-leg strength, 2 × week', tag: 'week 3/6', body: 'Step-downs and split squats progress to +8 kg. Cadence fade on late climbs should improve within two weeks of this block.' },
+      ],
+    };
+  }
+}
+</script>
+</body>
+</html>

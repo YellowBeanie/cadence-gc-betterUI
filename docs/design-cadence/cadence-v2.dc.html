@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="stylesheet" href="_ds/modernist-7ff3d31e-c79b-4e62-aaf4-7372382bf465/styles.css">
+  <script src="_ds/modernist-7ff3d31e-c79b-4e62-aaf4-7372382bf465/_ds_bundle.js"></script>
+  <style>
+    body{margin:0;background:var(--color-bg);color:var(--color-text);font-family:var(--font-body)}
+    a{color:var(--color-accent);text-decoration:none}
+    a:hover{color:var(--color-accent-600)}
+    @keyframes rise{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+    @keyframes growY{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+    @keyframes growX{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+    @keyframes draw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
+    @keyframes tick{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    @keyframes blink{0%,100%{opacity:1}50%{opacity:.15}}
+  </style>
+</helmet>
+<div style="min-height:100vh;background:var(--color-bg);display:flex;flex-direction:column">
+  <header style="display:flex;align-items:center;justify-content:space-between;padding:18px clamp(20px,4vw,56px);border-bottom:2px solid var(--color-divider);position:sticky;top:0;background:color-mix(in srgb,var(--color-bg) 88%,transparent);backdrop-filter:blur(12px);z-index:50">
+    <div onClick="{{ goDash }}" style="font-family:var(--font-heading);font-weight:800;font-size:22px;letter-spacing:-0.02em;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:10px">
+      <span style="width:12px;height:12px;background:var(--color-accent);display:inline-block"></span>CADENCE
+    </div>
+    <nav style="display:flex;gap:28px;align-items:center">
+      <span onClick="{{ goDash }}" style="font-family:var(--font-heading);font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;padding:4px 0;border-bottom:2px solid {{ navDash }};color:{{ navDashC }}">Today</span>
+      <span onClick="{{ goInsights }}" style="font-family:var(--font-heading);font-weight:600;font-size:12px;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;padding:4px 0;border-bottom:2px solid {{ navIns }};color:{{ navInsC }}">Insights</span>
+      <span style="display:flex;align-items:center;gap:8px;font-family:var(--font-heading);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:var(--color-accent-100);color:var(--color-accent-700);padding:6px 10px">
+        <span style="width:7px;height:7px;background:var(--color-accent);display:inline-block;animation:blink 2s steps(1) infinite"></span>
+        Garmin · Synced 08:12
+      </span>
+    </nav>
+  </header>
+
+  <div style="border-bottom:2px solid var(--color-divider);overflow:hidden;background:var(--color-text);color:var(--color-bg)">
+    <div style="display:flex;width:max-content;animation:tick 28s linear infinite;padding:8px 0">
+      <sc-for list="{{ ticker }}" as="t" hint-placeholder-count="12">
+        <span style="font-family:var(--font-heading);font-weight:600;font-size:12px;letter-spacing:.1em;text-transform:uppercase;padding:0 28px;border-right:1px solid color-mix(in srgb,#f3f2f2 30%,transparent);white-space:nowrap">{{ t }}</span>
+      </sc-for>
+    </div>
+  </div>
+
+  <sc-if value="{{ showDash }}" hint-placeholder-val="{{ true }}">
+  <main data-screen-label="Dashboard">
+    <section style="padding:clamp(48px,8vh,96px) clamp(20px,4vw,56px) clamp(36px,6vh,64px)">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,72px);align-items:end">
+        <div style="animation:rise .7s cubic-bezier(.16,1,.3,1) both">
+          <h6 style="margin:0;color:var(--color-accent)">Sat 09 Aug 2026 — Morning Report</h6>
+          <div style="font-family:var(--font-heading);font-weight:800;font-size:clamp(7rem,17vw,14rem);letter-spacing:-0.05em;line-height:.84;margin-top:12px">{{ heroCount }}</div>
+          <div style="display:flex;align-items:center;gap:14px;margin-top:18px">
+            <span style="font-family:var(--font-heading);font-weight:800;font-size:15px;letter-spacing:.06em;text-transform:uppercase">Body Battery</span>
+            <span style="font-family:var(--font-heading);font-weight:600;font-size:12px;letter-spacing:.06em;text-transform:uppercase;background:var(--color-accent);color:var(--color-bg);padding:4px 8px">+12 Overnight</span>
+          </div>
+        </div>
+        <div style="animation:rise .7s cubic-bezier(.16,1,.3,1) .12s both">
+          <div style="height:2px;background:var(--color-divider);margin-bottom:18px;transform-origin:left;animation:growX .9s cubic-bezier(.16,1,.3,1) .3s both"></div>
+          <p style="font-size:17px;line-height:1.55;max-width:44ch;margin:0">
+            Recovery is nearly complete. Yesterday's trail effort has been absorbed —
+            today suits a moderate aerobic run or a long hike.
+          </p>
+          <div style="display:flex;gap:10px;margin-top:20px">
+            <button class="btn btn-primary" onClick="{{ goInsights }}" style="justify-content:flex-start">View AI plan →</button>
+            <button class="btn btn-secondary" onClick="{{ openLatest }}" style="justify-content:flex-start">Last activity</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section style="border-top:2px solid var(--color-divider)">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))">
+        <sc-for list="{{ metrics }}" as="m" hint-placeholder-count="6">
+          <div style="padding:clamp(22px,3vw,36px) clamp(18px,2vw,28px);border-right:1px solid var(--color-divider);animation:rise .6s cubic-bezier(.16,1,.3,1) both;animation-delay:{{ m.dly }}" style-hover="background:var(--color-neutral-200)">
+            <h6 style="margin:0;font-size:11px">{{ m.label }}</h6>
+            <div style="display:flex;align-items:baseline;gap:6px;margin-top:14px">
+              <span style="font-family:var(--font-heading);font-weight:800;font-size:clamp(2.8rem,4.2vw,3.8rem);letter-spacing:-0.04em;line-height:1">{{ m.value }}</span>
+              <span style="font-size:12px;color:var(--color-neutral-600)">{{ m.unit }}</span>
+            </div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:16px">
+              <span style="font-family:var(--font-heading);font-weight:600;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:{{ m.deltaColor }}">{{ m.delta }}</span>
+              <svg width="72" height="22" viewBox="0 0 72 22" style="display:block"><polyline points="{{ m.spark }}" fill="none" stroke="#201e1d" stroke-width="1.5" pathLength="1" style="stroke-dasharray:1;animation:draw 1.4s cubic-bezier(.16,1,.3,1) .4s both"></polyline></svg>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section style="border-top:2px solid var(--color-divider);background:var(--color-surface)">
+      <div style="display:grid;grid-template-columns:1fr 1.4fr;gap:clamp(28px,5vw,72px);align-items:end;padding:clamp(40px,6vh,72px) clamp(20px,4vw,56px)">
+        <div>
+          <h6 style="margin:0;color:var(--color-accent)">7-Day Training Load</h6>
+          <div style="display:flex;align-items:baseline;gap:12px;margin-top:12px">
+            <span style="font-family:var(--font-heading);font-weight:800;font-size:clamp(3.6rem,6vw,5.6rem);letter-spacing:-0.045em;line-height:1">612</span>
+            <span style="font-size:12px;color:var(--color-neutral-600)">optimal 480–780</span>
+          </div>
+          <p style="font-size:15px;line-height:1.55;max-width:38ch;margin:18px 0 0">Load sits in the productive zone. One more quality session this week keeps the ramp within range.</p>
+        </div>
+        <div style="display:flex;align-items:flex-end;gap:clamp(8px,1.4vw,16px);height:160px">
+          <sc-for list="{{ loadDays }}" as="d" hint-placeholder-count="7">
+            <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;height:100%">
+              <div style="height:{{ d.h }}%;background:{{ d.color }};transform-origin:bottom;animation:growY .8s cubic-bezier(.16,1,.3,1) both;animation-delay:{{ d.dly }}"></div>
+              <div style="font-family:var(--font-heading);font-weight:600;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-600);text-align:center">{{ d.day }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </section>
+
+    <section style="border-top:2px solid var(--color-divider);padding:clamp(40px,6vh,72px) clamp(20px,4vw,56px)">
+      <div style="display:flex;justify-content:space-between;align-items:baseline">
+        <h2 style="margin:0;text-transform:uppercase;letter-spacing:-0.01em">Recent Activities</h2>
+        <h6 style="margin:0;color:var(--color-neutral-600)">Running · Hiking</h6>
+      </div>
+      <div style="margin-top:24px">
+        <sc-for list="{{ activities }}" as="a" hint-placeholder-count="4">
+          <div onClick="{{ a.open }}" style="display:grid;grid-template-columns:48px 1fr auto auto;gap:clamp(16px,3vw,40px);align-items:baseline;padding:22px 0;border-top:1px solid var(--color-divider);cursor:pointer;transition:all .3s cubic-bezier(.16,1,.3,1);animation:rise .6s cubic-bezier(.16,1,.3,1) both;animation-delay:{{ a.dly }}" style-hover="background:var(--color-accent-100);padding-left:14px;padding-right:14px">
+            <span style="font-family:var(--font-heading);font-weight:600;font-size:12px;color:var(--color-accent)">{{ a.idx }}</span>
+            <span style="font-family:var(--font-heading);font-weight:800;font-size:clamp(1.4rem,3vw,2.1rem);letter-spacing:-0.025em;text-transform:uppercase">{{ a.name }}</span>
+            <span style="font-family:var(--font-heading);font-weight:600;font-size:14px">{{ a.dist }}</span>
+            <span style="font-family:var(--font-heading);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-600)">{{ a.sport }} · {{ a.date }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section style="border-top:2px solid var(--color-divider);padding:clamp(40px,6vh,72px) clamp(20px,4vw,56px)">
+      <h6 style="margin:0;color:var(--color-accent)">Layers — Connected Tools</h6>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:0;margin-top:20px;border-left:1px solid var(--color-divider)">
+        <sc-for list="{{ tools }}" as="t" hint-placeholder-count="4">
+          <div style="padding:24px;border-right:1px solid var(--color-divider);border-top:1px solid var(--color-divider);border-bottom:1px solid var(--color-divider);cursor:pointer;transition:background .25s" style-hover="background:var(--color-neutral-200)">
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <span style="font-family:var(--font-heading);font-weight:800;font-size:16px;letter-spacing:-0.01em;text-transform:uppercase">{{ t.name }}</span>
+              <span style="font-family:var(--font-heading);font-weight:600;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:3px 7px;background:{{ t.stBg }};color:{{ t.stFg }}">{{ t.status }}</span>
+            </div>
+            <p style="font-size:13px;line-height:1.5;color:var(--color-neutral-700);margin:10px 0 0">{{ t.desc }}</p>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ showActivity }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="Activity detail">
+    <section style="padding:clamp(40px,6vh,72px) clamp(20px,4vw,56px) 0;animation:rise .6s cubic-bezier(.16,1,.3,1) both">
+      <button class="btn btn-ghost" onClick="{{ goDash }}" style="justify-content:flex-start;text-transform:uppercase;letter-spacing:.06em;font-size:12px">← Back to today</button>
+      <h6 style="margin:28px 0 0;color:var(--color-accent)">{{ act.sport }} — {{ act.date }} · {{ act.place }}</h6>
+      <h1 style="font-size:clamp(2.6rem,7vw,5.4rem);letter-spacing:-0.035em;line-height:.95;margin:10px 0 0;text-transform:uppercase">{{ act.name }}</h1>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-top:clamp(30px,5vh,48px);border-top:2px solid var(--color-divider)">
+        <sc-for list="{{ actStats }}" as="s" hint-placeholder-count="4">
+          <div style="padding:24px 20px 24px 0;border-right:1px solid var(--color-divider);animation:rise .6s cubic-bezier(.16,1,.3,1) both;animation-delay:{{ s.dly }}">
+            <h6 style="margin:0;font-size:11px">{{ s.k }}</h6>
+            <div style="display:flex;align-items:baseline;gap:5px;margin-top:10px">
+              <span style="font-family:var(--font-heading);font-weight:800;font-size:clamp(2.4rem,4.4vw,3.8rem);letter-spacing:-0.04em;line-height:1">{{ s.v }}</span>
+              <span style="font-size:12px;color:var(--color-neutral-600)">{{ s.u }}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section style="padding:clamp(32px,5vh,56px) clamp(20px,4vw,56px) 0">
+      <div style="display:flex;justify-content:space-between;align-items:baseline">
+        <h6 style="margin:0">Heart Rate · Pace — Full Session</h6>
+        <span style="font-family:var(--font-heading);font-weight:600;font-size:11px;letter-spacing:.06em;text-transform:uppercase"><span style="color:var(--color-accent)">▬</span> HR &nbsp;&nbsp;<span>▬</span> Pace</span>
+      </div>
+      <svg viewBox="0 0 800 200" style="width:100%;height:auto;display:block;margin-top:16px" preserveAspectRatio="none">
+        <line x1="0" y1="50" x2="800" y2="50" stroke="#d7d3d3" stroke-width="1"></line>
+        <line x1="0" y1="100" x2="800" y2="100" stroke="#d7d3d3" stroke-width="1"></line>
+        <line x1="0" y1="150" x2="800" y2="150" stroke="#d7d3d3" stroke-width="1"></line>
+        <polyline points="{{ paceLine }}" fill="none" stroke="#201e1d" stroke-width="2" pathLength="1" style="stroke-dasharray:1;animation:draw 1.6s cubic-bezier(.16,1,.3,1) .2s both"></polyline>
+        <polyline points="{{ hrLine }}" fill="none" stroke="#ec3013" stroke-width="2" pathLength="1" style="stroke-dasharray:1;animation:draw 1.6s cubic-bezier(.16,1,.3,1) .45s both"></polyline>
+      </svg>
+      <div style="display:flex;justify-content:space-between;font-family:var(--font-heading);font-weight:600;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-600);margin-top:8px">
+        <span>0 km</span><span>{{ act.mid }}</span><span>{{ act.dist }}</span>
+      </div>
+    </section>
+
+    <section style="padding:clamp(40px,6vh,72px) clamp(20px,4vw,56px)">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,72px)">
+        <div>
+          <h6 style="margin:0">Splits</h6>
+          <div style="margin-top:16px">
+            <sc-for list="{{ splits }}" as="sp" hint-placeholder-count="5">
+              <div style="display:flex;align-items:center;gap:16px;padding:11px 0;border-top:1px solid var(--color-divider)">
+                <span style="font-family:var(--font-heading);font-weight:600;font-size:12px;color:var(--color-neutral-600);width:28px">{{ sp.km }}</span>
+                <div style="flex:1;height:10px;background:var(--color-neutral-200);position:relative"><div style="position:absolute;left:0;top:0;bottom:0;width:{{ sp.w }}%;background:var(--color-text);transform-origin:left;animation:growX .8s cubic-bezier(.16,1,.3,1) both;animation-delay:{{ sp.dly }}"></div></div>
+                <span style="font-family:var(--font-heading);font-weight:800;font-size:15px;width:56px;text-align:right">{{ sp.pace }}</span>
+                <span style="font-family:var(--font-heading);font-weight:600;font-size:12px;color:var(--color-accent);width:44px;text-align:right">{{ sp.hr }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="border:2px solid var(--color-divider);padding:clamp(24px,3.5vw,40px);align-self:start;animation:rise .7s cubic-bezier(.16,1,.3,1) .2s both">
+          <div style="display:flex;justify-content:space-between;align-items:baseline">
+            <h6 style="margin:0;color:var(--color-accent)">AI Analysis — Layer</h6>
+            <span style="font-family:var(--font-heading);font-weight:600;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--color-neutral-600)">Claude · 08:14</span>
+          </div>
+          <p style="font-size:15px;line-height:1.55;margin:16px 0 0;font-weight:600">{{ act.ai1 }}</p>
+          <p style="font-size:15px;line-height:1.55;color:var(--color-neutral-700);margin:12px 0 0">{{ act.ai2 }}</p>
+          <button class="btn btn-primary" onClick="{{ goInsights }}" style="justify-content:flex-start;margin-top:20px">Full analysis →</button>
+        </div>
+      </div>
+    </section>
+  </main>
+  </sc-if>
+
+  <sc-if value="{{ showInsights }}" hint-placeholder-val="{{ false }}">
+  <main data-screen-label="AI insights">
+    <section style="padding:clamp(48px,8vh,96px) clamp(20px,4vw,56px) 0;animation:rise .6s cubic-bezier(.16,1,.3,1) both">
+      <h6 style="margin:0;color:var(--color-accent)">Week 32 — AI Review</h6>
+      <h1 style="font-size:clamp(2.6rem,6.5vw,5rem);letter-spacing:-0.035em;line-height:.98;margin:12px 0 0;max-width:20ch;text-transform:uppercase">Aerobic base is building. Hold the ramp, feed the long runs.</h1>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-top:clamp(30px,5vh,48px);border-top:2px solid var(--color-divider)">
+        <sc-for list="{{ weekStats }}" as="w" hint-placeholder-count="4">
+          <div style="padding:24px 20px 24px 0;border-right:1px solid var(--color-divider);animation:rise .6s cubic-bezier(.16,1,.3,1) both;animation-delay:{{ w.dly }}">
+            <h6 style="margin:0;font-size:11px">{{ w.k }}</h6>
+            <div style="display:flex;align-items:baseline;gap:5px;margin-top:10px">
+              <span style="font-family:var(--font-heading);font-weight:800;font-size:clamp(2.4rem,4.4vw,3.8rem);letter-spacing:-0.04em;line-height:1">{{ w.v }}</span>
+              <span style="font-size:12px;color:var(--color-neutral-600)">{{ w.u }}</span>
+            </div>
+            <div style="font-family:var(--font-heading);font-weight:600;font-size:11px;letter-spacing:.05em;text-transform:uppercase;color:{{ w.c }};margin-top:10px">{{ w.d }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section style="padding:clamp(32px,5vh,56px) clamp(20px,4vw,56px) 0">
+      <h6 style="margin:0">Fitness Trend — 8 Weeks</h6>
+      <div style="display:flex;align-items:flex-end;gap:clamp(10px,1.6vw,20px);height:190px;margin-top:20px">
+        <sc-for list="{{ weeks }}" as="wk" hint-placeholder-count="8">
+          <div style="flex:1;display:flex;flex-direction:column;justify-content:flex-end;gap:8px;height:100%">
+            <div style="font-family:var(--font-heading);font-weight:600;font-size:11px;color:var(--color-neutral-600);text-align:center">{{ wk.v }}</div>
+            <div style="height:{{ wk.h }}%;background:{{ wk.color }};transform-origin:bottom;animation:growY .9s cubic-bezier(.16,1,.3,1) both;animation-delay:{{ wk.dly }}"></div>
+            <div style="font-family:var(--font-heading);font-weight:600;font-size:10px;letter-spacing:.06em;text-transform:uppercase;color:var(--color-neutral-600);text-align:center">{{ wk.label }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+
+    <section style="border-top:2px solid var(--color-divider);margin-top:clamp(40px,6vh,64px);padding:clamp(40px,6vh,72px) clamp(20px,4vw,56px)">
+      <h2 style="margin:0;text-transform:uppercase">This Week's Guidance</h2>
+      <div style="margin-top:24px">
+        <sc-for list="{{ guidance }}" as="g" hint-placeholder-count="3">
+          <div style="display:grid;grid-template-columns:190px 1fr auto;gap:clamp(20px,3vw,44px);align-items:baseline;padding:24px 0;border-top:1px solid var(--color-divider);animation:rise .6s cubic-bezier(.16,1,.3,1) both;animation-delay:{{ g.dly }}">
+            <h6 style="margin:0;color:var(--color-accent)">{{ g.tool }}</h6>
+            <div>
+              <div style="font-family:var(--font-heading);font-weight:800;font-size:clamp(1.2rem,2.2vw,1.5rem);letter-spacing:-0.015em;text-transform:uppercase">{{ g.title }}</div>
+              <p style="font-size:14px;line-height:1.55;color:var(--color-neutral-700);margin:8px 0 0;max-width:66ch">{{ g.body }}</p>
+            </div>
+            <span style="font-family:var(--font-heading);font-weight:600;font-size:10px;letter-spacing:.08em;text-transform:uppercase;padding:4px 8px;background:var(--color-neutral-200)">{{ g.tag }}</span>
+          </div>
+        </sc-for>
+      </div>
+    </section>
+  </main>
+  </sc-if>
+
+  <section style="background:var(--color-accent);color:var(--color-bg);padding:clamp(48px,8vh,88px) clamp(20px,4vw,56px);margin-top:auto">
+    <div style="font-family:var(--font-heading);font-weight:800;font-size:clamp(2.8rem,8vw,6.5rem);letter-spacing:-0.04em;line-height:.92;text-transform:uppercase">Train.<br>Recover.<br>Repeat.</div>
+    <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;margin-top:clamp(32px,5vh,56px);padding-top:20px;border-top:2px solid color-mix(in srgb,#f3f2f2 40%,transparent);font-family:var(--font-heading);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase">
+      <span>Cadence — a layer over Garmin Connect</span>
+      <span>Data © you, always</span>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1440}}">
+class Component extends DCLogic {
+  state = { screen: 'dash', actIdx: 0, heroCount: 0 };
+  componentDidMount() { this.animateHero(); }
+  animateHero() {
+    const target = 78, t0 = performance.now(), dur = 1400;
+    const step = (t) => {
+      const p = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - p, 4);
+      this.setState({ heroCount: Math.round(target * e) });
+      if (p < 1) this._raf = requestAnimationFrame(step);
+    };
+    cancelAnimationFrame(this._raf);
+    this._raf = requestAnimationFrame(step);
+  }
+  go(screen, actIdx) {
+    this.setState({ screen, actIdx: actIdx ?? this.state.actIdx });
+    window.scrollTo(0, 0);
+    if (screen === 'dash') this.animateHero();
+  }
+  renderVals() {
+    const { screen, actIdx } = this.state;
+    const accent = '#ec3013', ink = '#201e1d', mut = '#9b9797', deep = '#ae1800', n600 = '#7d7979';
+    const dly = (arr, base = 0, step = 0.07) => arr.map((x, i) => ({ ...x, dly: `${(base + i * step).toFixed(2)}s` }));
+    const spark = (vals) => vals.map((v, i) => `${(i / (vals.length - 1)) * 72},${20 - v * 18}`).join(' ');
+    const metrics = dly([
+      { label: 'VO2max', value: '52', unit: 'ml/kg/min', delta: '+1 this month', deltaColor: deep, spark: spark([.3,.35,.4,.38,.5,.6,.72,.8]) },
+      { label: 'Resting HR', value: '46', unit: 'bpm', delta: '−2 vs avg', deltaColor: deep, spark: spark([.7,.65,.6,.62,.5,.45,.4,.35]) },
+      { label: 'Training Load', value: '612', unit: '7d', delta: 'optimal', deltaColor: n600, spark: spark([.2,.3,.45,.4,.55,.6,.7,.68]) },
+      { label: 'Sleep Score', value: '84', unit: '/100', delta: '7h 42m', deltaColor: n600, spark: spark([.5,.6,.55,.7,.65,.75,.8,.85]) },
+      { label: 'Calories', value: '2 140', unit: 'kcal/day', delta: 'target 2 300', deltaColor: n600, spark: spark([.6,.5,.7,.65,.55,.6,.5,.45]) },
+      { label: 'Recovery', value: '9', unit: 'hrs left', delta: 'ready tonight', deltaColor: deep, spark: spark([.9,.8,.7,.6,.5,.4,.3,.2]) },
+    ], 0.1);
+    const loadDays = dly([
+      { day: 'Mon', h: 34, color: ink }, { day: 'Tue', h: 1, color: mut },
+      { day: 'Wed', h: 58, color: ink }, { day: 'Thu', h: 22, color: ink },
+      { day: 'Fri', h: 1, color: mut }, { day: 'Sat', h: 88, color: accent },
+      { day: 'Sun', h: 12, color: mut },
+    ], 0.15, 0.08);
+    const actsData = [
+      { name: 'Trail du Jorat', sport: 'Trail Run', date: 'Today', place: 'Lausanne, VD', dist: '14.2 km',
+        stats: [{k:'Distance',v:'14.2',u:'km'},{k:'Time',v:'1:24',u:'h'},{k:'Avg Pace',v:'5:57',u:'/km'},{k:'Ascent',v:'486',u:'m D+'},{k:'Avg HR',v:'152',u:'bpm'}],
+        mid: '7 km',
+        ai1: 'Strong aerobic control on the climbs — HR stayed under threshold on all but the final 400 m ascent. Decoupling was 4.1%, your best on this route.',
+        ai2: 'The last two splits show cadence dropping with fatigue. A short hill-strides block would protect late-race form.',
+        splits: [{km:'1',pace:'6:12',hr:'138',w:62},{km:'2',pace:'5:48',hr:'149',w:74},{km:'3',pace:'6:35',hr:'156',w:52},{km:'4',pace:'5:41',hr:'151',w:78},{km:'5',pace:'5:52',hr:'150',w:72},{km:'6',pace:'6:48',hr:'158',w:46},{km:'7',pace:'5:39',hr:'153',w:80}],
+        hr: [.35,.45,.5,.55,.5,.62,.66,.6,.7,.75,.68,.72,.8,.74,.7], pace: [.5,.6,.55,.42,.5,.36,.4,.52,.44,.38,.5,.42,.3,.44,.5] },
+      { name: 'Tempo — Vidy', sport: 'Run', date: 'Aug 7', place: 'Lausanne, VD', dist: '10.0 km',
+        stats: [{k:'Distance',v:'10.0',u:'km'},{k:'Time',v:'44:50',u:'min'},{k:'Avg Pace',v:'4:29',u:'/km'},{k:'Avg HR',v:'164',u:'bpm'}],
+        mid: '5 km',
+        ai1: 'Even pacing through the tempo block — splits 3–8 within a 6-second band. Lactate threshold pace is trending faster: 4:29 today vs 4:36 four weeks ago.',
+        ai2: 'HR drift in the final 2 km suggests hydration cost in the heat; pre-cool before the next hard session.',
+        splits: [{km:'1',pace:'4:51',hr:'148',w:68},{km:'2',pace:'4:32',hr:'160',w:82},{km:'3',pace:'4:28',hr:'164',w:86},{km:'4',pace:'4:27',hr:'165',w:87},{km:'5',pace:'4:30',hr:'166',w:84},{km:'6',pace:'4:26',hr:'168',w:88}],
+        hr: [.3,.5,.6,.68,.7,.72,.72,.74,.75,.76,.78,.8,.82,.8,.76], pace: [.6,.42,.36,.34,.33,.35,.32,.34,.33,.35,.34,.32,.36,.4,.5] },
+      { name: 'Rochers-de-Naye', sport: 'Hike', date: 'Aug 5', place: 'Montreux, VD', dist: '11.8 km',
+        stats: [{k:'Distance',v:'11.8',u:'km'},{k:'Time',v:'3:52',u:'h'},{k:'Ascent',v:'1 620',u:'m D+'},{k:'Avg HR',v:'128',u:'bpm'}],
+        mid: '6 km',
+        ai1: 'A big vertical day at genuinely easy intensity — 92% of time in Zone 1–2. Perfect base stimulus with minimal recovery cost.',
+        ai2: 'Descent pace was conservative; eccentric load stayed low, so no adjustment needed to this week’s plan.',
+        splits: [{km:'2',pace:'18:40',hr:'122',w:40},{km:'4',pace:'21:05',hr:'131',w:32},{km:'6',pace:'23:50',hr:'134',w:26},{km:'8',pace:'19:22',hr:'126',w:38},{km:'10',pace:'14:08',hr:'118',w:56}],
+        hr: [.3,.38,.42,.48,.52,.55,.58,.6,.56,.52,.48,.42,.38,.34,.3], pace: [.7,.6,.55,.5,.45,.4,.38,.36,.42,.48,.55,.62,.68,.72,.75] },
+      { name: 'Easy — Sauvabelin', sport: 'Run', date: 'Aug 4', place: 'Lausanne, VD', dist: '8.1 km',
+        stats: [{k:'Distance',v:'8.1',u:'km'},{k:'Time',v:'45:12',u:'min'},{k:'Avg Pace',v:'5:35',u:'/km'},{k:'Avg HR',v:'134',u:'bpm'}],
+        mid: '4 km',
+        ai1: 'Textbook recovery run — HR fully decoupled from pace, average 134 bpm at 5:35/km. Aerobic efficiency at this intensity is up 6% since June.',
+        ai2: 'Nothing to change. Keep these genuinely easy; they are doing their job.',
+        splits: [{km:'1',pace:'5:44',hr:'128',w:66},{km:'2',pace:'5:38',hr:'132',w:70},{km:'3',pace:'5:31',hr:'134',w:73},{km:'4',pace:'5:36',hr:'135',w:71},{km:'5',pace:'5:29',hr:'136',w:74}],
+        hr: [.35,.4,.44,.46,.48,.5,.5,.52,.52,.54,.54,.55,.55,.56,.55], pace: [.55,.52,.5,.48,.5,.47,.46,.48,.45,.47,.46,.44,.46,.48,.5] },
+    ];
+    const line = (vals) => vals.map((v, i) => `${(i / (vals.length - 1)) * 800},${190 - v * 180}`).join(' ');
+    const act = actsData[actIdx];
+    const tools = [
+      { name: 'Garmin Connect', desc: 'Source of truth — activities, sleep, Body Battery', status: 'Synced', stBg: accent, stFg: '#f3f2f2' },
+      { name: 'AI Analysis', desc: 'Session reviews, trends, decoupling & readiness', status: 'Active', stBg: accent, stFg: '#f3f2f2' },
+      { name: 'Food Advisor', desc: 'Fuelling & weight-loss guidance from real burn data', status: 'Active', stBg: accent, stFg: '#f3f2f2' },
+      { name: 'Muscle Program', desc: 'Strength blocks matched to your run volume', status: 'Connect', stBg: '#eae7e7', stFg: ink },
+    ];
+    const weeks = dly(['W25','W26','W27','W28','W29','W30','W31','W32'].map((label, i) => {
+      const v = [385, 420, 460, 310, 495, 540, 580, 612][i];
+      return { label, v: String(v), h: (v / 700) * 100, color: i === 7 ? accent : ink };
+    }), 0.1, 0.07);
+    return {
+      showDash: screen === 'dash', showActivity: screen === 'activity', showInsights: screen === 'insights',
+      navDash: screen === 'dash' ? accent : 'transparent', navDashC: screen === 'dash' ? accent : ink,
+      navIns: screen === 'insights' ? accent : 'transparent', navInsC: screen === 'insights' ? accent : ink,
+      goDash: () => this.go('dash'), goInsights: () => this.go('insights'),
+      openLatest: () => this.go('activity', 0),
+      heroCount: String(this.state.heroCount),
+      ticker: ['VO2max 52', 'Resting HR 46 bpm', 'Load 612 — Optimal', 'Sleep 84/100', 'Body Battery 78', 'Week 32 · 44.1 km', 'Vertical 2 106 m', 'Next: Threshold Wed',
+               'VO2max 52', 'Resting HR 46 bpm', 'Load 612 — Optimal', 'Sleep 84/100', 'Body Battery 78', 'Week 32 · 44.1 km', 'Vertical 2 106 m', 'Next: Threshold Wed'],
+      metrics, loadDays, tools, weeks,
+      activities: dly(actsData.map((a, i) => ({ ...a, idx: String(i + 1).padStart(2, '0'), open: () => this.go('activity', i) })), 0.1),
+      act, actStats: dly(act.stats, 0.1), splits: dly(act.splits, 0.15, 0.06),
+      hrLine: line(act.hr), paceLine: line(act.pace),
+      weekStats: dly([
+        { k: 'Volume', v: '44.1', u: 'km', d: '+8% vs W31', c: deep },
+        { k: 'Vertical', v: '2 106', u: 'm D+', d: 'biggest week yet', c: deep },
+        { k: 'Time in Z2', v: '68', u: '%', d: 'on target', c: n600 },
+        { k: 'Weight', v: '74.8', u: 'kg', d: '−0.4 this week', c: n600 },
+      ], 0.1),
+      guidance: dly([
+        { tool: 'Training Prep', title: 'Wednesday — 6 × 3 min at threshold', tag: 'Planned', body: 'Load has room for one quality session. Threshold repeats on flat ground; keep HR under 168 and full 90-second recoveries.' },
+        { tool: 'Food Advisor', title: 'Fuel the Saturday long run', tag: 'Adjusted', body: 'Deficit is on track at ~350 kcal/day. Add 60 g carbs before Saturday’s trail run — under-fuelled long runs are stalling the fat-loss trend, not helping it.' },
+        { tool: 'Muscle Program', title: 'Block 2 — single-leg strength, 2 × week', tag: 'Week 3/6', body: 'Step-downs and split squats progress to +8 kg. Cadence fade on late climbs should improve within two weeks of this block.' },
+      ], 0.1),
+    };
+  }
+}
+</script>
+</body>
+</html>

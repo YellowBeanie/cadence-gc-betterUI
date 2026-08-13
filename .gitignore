@@ -1,0 +1,44 @@
+# ── Données extraites (jamais versionnées) ──────────────────────────────
+garmin.db
+connaissances.db
+*.fit
+browser_profile/
+fit/
+export/
+exports/
+debug/
+downloaded_files/
+latest_logs/
+last_success
+.snapshots/
+# Base de connaissances de l'atelier PC (connaissances/atelier.py, tâche 11) :
+# donnée locale synchronisée avec le NAS par scp, jamais commitée.
+data-atelier/
+# I6 (revue finale) : la base de connaissances et les textes qu'elle indexe
+# ne doivent JAMAIS être publiés — ce motif nu (symétrique de garmin.db)
+# couvre `data/` où qu'il apparaisse, plutôt que de faire reposer la garantie
+# uniquement sur le répertoire de travail actuel (`git ls-files data/` était
+# vide au moment de l'ajout — vérifié avant, aucun fichier suivi affecté).
+data/
+
+# ── Secrets ─────────────────────────────────────────────────────────────
+.env
+# Surcharge locale des scripts hôtes (deploy/nas/*.sh) — jamais versionnée,
+# comme .env.
+config.env
+# Le modèle, lui, est versionné
+!deploy/nas/env.example
+
+# ── Outillage local (liste alignée sur k3s-homelab) ─────────────────────
+.claude/
+.omc/
+.superpowers/
+state/
+skills/
+**/.fuse_hidden*
+node_modules/
+*.log
+
+# Bytecode Python (py_compile local sur les scripts du collector)
+__pycache__/
+config.mk

@@ -1,0 +1,2 @@
+# Dépendances d'extraction sur le NAS : HTML seulement (PDF/YouTube -> file_ingestion, atelier PC).
+trafilatura

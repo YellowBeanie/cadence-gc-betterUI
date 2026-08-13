@@ -1,0 +1,63 @@
+diff --git a/garmin_client/client.py b/garmin_client/client.py
+index f365d74..e55357f 100644
+--- a/garmin_client/client.py
++++ b/garmin_client/client.py
+@@ -21,6 +21,7 @@ from datetime import date, datetime, timedelta
+ from pathlib import Path
+ from typing import Optional
+ 
++from selenium.common.exceptions import ElementClickInterceptedException
+ from selenium.webdriver.common.action_chains import ActionChains
+ from selenium.webdriver.common.by import By
+ from selenium.webdriver.common.keys import Keys
+@@ -350,6 +351,29 @@ class GarminClient:
+         except Exception:
+             pass
+ 
++    def _click_past_overlay(self, element, label: str, timeout_s: int = 180) -> None:
++        """Click an element, waiting out any overlay that intercepts the click.
++
++        Garmin SSO sometimes shows a reCAPTCHA challenge covering the login
++        form. The challenge must be solved by a human in the (visible) browser
++        window — we never attempt to solve it, we only wait and retry.
++        """
++        warned = False
++        deadline = time.time() + timeout_s
++        while True:
++            try:
++                element.click()
++                return
++            except ElementClickInterceptedException:
++                if not warned:
++                    warned = True
++                    print(f"  An overlay is blocking the {label} field (reCAPTCHA challenge?).")
++                    print("  Solve it in the browser window — waiting up to "
++                          f"{timeout_s}s...")
++                if time.time() > deadline:
++                    raise
++                time.sleep(2)
++
+     def _type_slowly(self, text: str, delay_s: float = 0.03) -> None:
+         """Type text with delays between keystrokes for stealth."""
+         actions = ActionChains(self._driver)
+@@ -428,7 +452,10 @@ class GarminClient:
+             print("Try running with --visible or deleting browser_profile/")
+             return False
+ 
+-        email_input.click()
++        self._click_past_overlay(email_input, "email")
++        # The SSO page can restore a previously typed value — clear it first
++        email_input.send_keys(Keys.CONTROL, "a")
++        email_input.send_keys(Keys.DELETE)
+         self._type_slowly(self.email, delay_s=0.03)
+ 
+         try:
+@@ -439,7 +466,7 @@ class GarminClient:
+             log.error("Password field not found")
+             return False
+ 
+-        pwd_input.click()
++        self._click_past_overlay(pwd_input, "password")
+         self._type_slowly(self.password, delay_s=0.03)
+ 
+         # Auto-check "Remember Me"

@@ -1,0 +1,584 @@
+@import "tailwindcss";
+
+/* ===================================================================
+   Jetons de design — pivot visuel « Cadence v2 » (tâche 22, docs/superpowers/
+   sdd/2026-08-06-app-entrainement/task-22-brief.md). Remplace le système
+   MANA (papier/encre/argile, éditorial suisse) par le DS **Modernist** :
+   jetons repris VERBATIM de docs/design-cadence/modernist.css (`:root`),
+   SANS le `@import` de fontes — Archivo (400/600/800 seulement, Space Mono
+   disparaît) est auto-hébergée via next/font/google (app/layout.tsx), jamais
+   une requête réseau vers Google au chargement.
+   =================================================================== */
+:root {
+  --color-bg: #f3f2f2;
+  --color-surface: #eae9e9;
+  --color-text: #201e1d;
+  --color-accent: #ec3013;
+  --color-accent-2: #e15b47;
+  --color-divider: color-mix(in srgb, #201e1d 40%, transparent);
+
+  /* Rampes tonales — générées en OKLCH sur une échelle de luminosité
+     partagée, verbatim modernist.css. */
+  --color-neutral-100: #f8f4f4;
+  --color-neutral-200: #eae7e7;
+  --color-neutral-300: #d7d3d3;
+  --color-neutral-400: #bab6b6;
+  --color-neutral-500: #9b9797;
+  --color-neutral-600: #7d7979;
+  --color-neutral-700: #605d5d;
+  --color-neutral-800: #444141;
+  --color-neutral-900: #2d2b2b;
+
+  --color-accent-100: #fff2ef;
+  --color-accent-200: #ffe0d9;
+  --color-accent-300: #ffc4b8;
+  --color-accent-400: #ff9783;
+  --color-accent-500: #ff563c;
+  --color-accent-600: #dd2b0f;
+  --color-accent-700: #ae1800;
+  --color-accent-800: #7c1405;
+  --color-accent-900: #4d170e;
+
+  --color-accent-2-100: #fff2ef;
+  --color-accent-2-200: #ffe0da;
+  --color-accent-2-300: #ffc4b9;
+  --color-accent-2-400: #ff9784;
+  --color-accent-2-500: #ef6853;
+  --color-accent-2-600: #c94b39;
+  --color-accent-2-700: #9e3526;
+  --color-accent-2-800: #71261b;
+  --color-accent-2-900: #471d16;
+
+  /* Familles — Archivo seul (400/600/800), auto-hébergée par next/font
+     (app/layout.tsx). Space Mono disparaît avec MANA. */
+  --font-heading: var(--font-archivo), system-ui, sans-serif;
+  --font-heading-weight: 800;
+  --font-body: var(--font-archivo), system-ui, sans-serif;
+
+  --space-1: 4.0px;
+  --space-2: 8.0px;
+  --space-3: 12.0px;
+  --space-4: 16.0px;
+  --space-6: 24.0px;
+  --space-8: 32.0px;
+
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+
+  --shadow-sm: 0 1px 2px color-mix(in srgb, #2d2b2b 14%, transparent);
+  --shadow-md: 0 3px 10px color-mix(in srgb, #2d2b2b 16%, transparent);
+  --shadow-lg: 0 12px 32px color-mix(in srgb, #2d2b2b 22%, transparent);
+
+  /* ---- Zones de FC (lib/zones.ts) : couleur = donnée, jamais un habillage,
+     inchangées par le pivot Modernist. ---- */
+  --z1: #5AA9E6;
+  --z2: #4ED4A0;
+  --z3: #F2C94C;
+  --z4: #F2994A;
+  --z5: #EB5757;
+
+  /* ---- Mise en page ---- */
+  --gutter: clamp(20px, 4vw, 56px);
+
+  /* ---- Mouvement ---- */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-text: var(--color-text);
+  --color-accent: var(--color-accent);
+  --color-accent-2: var(--color-accent-2);
+  --color-divider: var(--color-divider);
+
+  --color-neutral-100: var(--color-neutral-100);
+  --color-neutral-200: var(--color-neutral-200);
+  --color-neutral-300: var(--color-neutral-300);
+  --color-neutral-400: var(--color-neutral-400);
+  --color-neutral-500: var(--color-neutral-500);
+  --color-neutral-600: var(--color-neutral-600);
+  --color-neutral-700: var(--color-neutral-700);
+  --color-neutral-800: var(--color-neutral-800);
+  --color-neutral-900: var(--color-neutral-900);
+
+  --color-accent-100: var(--color-accent-100);
+  --color-accent-200: var(--color-accent-200);
+  --color-accent-300: var(--color-accent-300);
+  --color-accent-400: var(--color-accent-400);
+  --color-accent-500: var(--color-accent-500);
+  --color-accent-600: var(--color-accent-600);
+  --color-accent-700: var(--color-accent-700);
+  --color-accent-800: var(--color-accent-800);
+  --color-accent-900: var(--color-accent-900);
+
+  --font-sans: var(--font-heading);
+}
+
+/* Thème unique, clair — le DS Modernist ne prévoit pas de variante sombre. */
+html {
+  color-scheme: light;
+  /* Ceinture de sécurité : aucune page de l'app n'a de défilement horizontal
+     voulu (le ticker gère le sien). `clip` interdit le panoramique latéral
+     sans créer de conteneur de défilement — un débordement résiduel devient
+     invisible au lieu de casser l'UX mobile (retour l'utilisateur, 2026-08-09). */
+  overflow-x: clip;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  font-weight: var(--font-heading-weight);
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+h6 {
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.p {
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 1.0625rem;
+  line-height: 1.55;
+  color: var(--color-text);
+}
+
+.text-muted { color: color-mix(in srgb, var(--color-text) 55%, transparent); }
+
+/* ---------- Mouvement : keyframes de la maquette v2 (verbatim) --------- */
+@keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+@keyframes growY { from { transform: scaleY(0); } to { transform: scaleY(1); } }
+@keyframes growX { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes draw { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
+@keyframes tick { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .15; } }
+
+/* Le DS Modernist n'embarque pas cette règle (contrairement à MANA) : ajoutée
+   ici, elle écrase toutes les durées d'animation/transition (brief tâche 22,
+   « Mouvement »). Les délais aussi : avec `both`, un délai non nul garde
+   l'élément à son état initial (invisible) pendant toute son attente. */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0s !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0s !important;
+  }
+}
+
+/* ===================================================================
+   Mise en page / composants — construits à partir des jetons ci-dessus,
+   traduits de docs/design-cadence/cadence-v2.dc.html. Pas de max-width
+   central (contrairement à MANA) : la maquette v2 va au filet, seul le
+   `--gutter` cadre le contenu.
+   =================================================================== */
+
+.wrap {
+  padding-inline: var(--gutter);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ---------- Header ---------- */
+.hdr {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 18px var(--gutter);
+  background: color-mix(in srgb, var(--color-bg) 88%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 2px solid var(--color-divider);
+}
+
+.hdr .mark {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-heading);
+  font-weight: 800;
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.hdr .mark::before {
+  content: "";
+  width: 12px;
+  height: 12px;
+  flex: none;
+  background: var(--color-accent);
+  display: inline-block;
+}
+
+.hdr nav {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  flex-wrap: wrap;
+}
+
+.navlink {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--color-text);
+  cursor: pointer;
+  padding: 4px 0;
+  border-bottom: 2px solid transparent;
+  transition: color var(--dur-base, 260ms) var(--ease-out), border-color var(--dur-base, 260ms) var(--ease-out);
+}
+
+.navlink:hover,
+.navlink.active {
+  color: var(--color-accent);
+  border-bottom-color: var(--color-accent);
+}
+
+.sync-pastille {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  background: var(--color-accent-100);
+  color: var(--color-accent-700);
+  padding: 6px 10px;
+}
+
+.sync-pastille.perime {
+  background: var(--color-neutral-200);
+  color: var(--color-neutral-700);
+}
+
+.sync-point {
+  width: 7px;
+  height: 7px;
+  flex: none;
+  display: inline-block;
+  background: var(--color-accent);
+  animation: blink 2s steps(1) infinite;
+}
+
+.sync-point.perime {
+  background: var(--color-neutral-500);
+  animation: none;
+}
+
+.entete-action {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 11px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.entete-action:hover:not(:disabled) { color: var(--color-accent); }
+.entete-action:disabled { cursor: not-allowed; opacity: 0.6; }
+
+/* ---------- Ticker (nouveau, tâche 22) ---------- */
+.ticker-wrap {
+  border-bottom: 2px solid var(--color-divider);
+  overflow: hidden;
+  background: var(--color-text);
+  color: var(--color-bg);
+}
+
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: tick 28s linear infinite;
+  padding: 8px 0;
+}
+
+.ticker-item {
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  padding: 0 28px;
+  border-right: 1px solid color-mix(in srgb, var(--color-bg) 30%, transparent);
+  white-space: nowrap;
+}
+
+/* ---------- Section générique ---------- */
+.section {
+  border-top: 2px solid var(--color-divider);
+}
+
+.section-inner {
+  padding: clamp(40px, 6vh, 72px) var(--gutter);
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* ---------- Grilles 2 colonnes (héro, charge 7 jours, détail de séance) —
+   s'empilent sous 760px (« mobile propre », brief tâche 22). ---------- */
+.grid-2-end, .grid-2-start, .grid-charge {
+  display: grid;
+  gap: clamp(28px, 5vw, 72px);
+}
+.grid-2-end { grid-template-columns: 1fr 1fr; align-items: end; }
+.grid-2-start { grid-template-columns: 1fr 1fr; align-items: start; }
+.grid-charge { grid-template-columns: 1fr 1.4fr; align-items: end; }
+
+@media (max-width: 760px) {
+  .grid-2-end, .grid-2-start, .grid-charge { grid-template-columns: 1fr; }
+}
+
+/* ---------- Photo + stats côte à côte (page séance, tâche 27) ----------
+   La colonne photo (`auto`) épouse la largeur naturelle de l'image — jamais
+   recadrée, plafonnée en hauteur par le composant — et les stats replient
+   leur auto-fit dans le reste : pas d'espace vide, portrait comme paysage. */
+.grille-photo-stats {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(280px, 1fr);
+  gap: clamp(24px, 3.5vw, 56px);
+  align-items: start;
+  margin-top: clamp(30px, 5vh, 48px);
+  padding-bottom: clamp(40px, 6vh, 64px);
+}
+.grille-photo-stats figure img { max-width: min(52vw, 780px); }
+@media (max-width: 860px) {
+  .grille-photo-stats { grid-template-columns: 1fr; }
+  .grille-photo-stats figure img { max-width: 100%; }
+}
+
+/* ---------- Bande de mesures / stats (dashboard, séance, historique) ---- */
+.bande-mesures {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+.bande-mesures.bande-170 {
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+}
+.mesure-tuile {
+  padding: clamp(22px, 3vw, 36px) clamp(18px, 2vw, 28px) clamp(22px, 3vw, 36px) 0;
+  border-top: 1px solid var(--color-divider);
+  transition: background .25s;
+}
+.mesure-tuile:hover { background: var(--color-neutral-200); }
+@media (min-width: 640px) {
+  .mesure-tuile { border-top: none; border-right: 1px solid var(--color-divider); }
+}
+
+/* ---------- Séances récentes (work-row) ---------- */
+.work-row {
+  display: grid;
+  grid-template-columns: 48px 1fr auto auto;
+  gap: clamp(16px, 3vw, 40px);
+  align-items: baseline;
+  padding: 22px 0;
+  border-top: 1px solid var(--color-divider);
+  transition: background .3s var(--ease-out), padding .3s var(--ease-out);
+}
+.work-row.cliquable { cursor: pointer; }
+.work-row.cliquable:hover { background: var(--color-accent-100); padding-left: 14px; padding-right: 14px; }
+/* Densité compacte (/reglages, tâche 45) : resserre l'espacement vertical des
+   listes de séances (séances récentes du dashboard, liste complète de
+   /seances) — rien d'autre ne change. */
+.work-row.densite-compacte { padding: 12px 0; }
+.work-row .idx { font-family: var(--font-heading); font-weight: 600; font-size: 12px; color: var(--color-accent); }
+.work-row .nm {
+  font-family: var(--font-heading); font-weight: 800; font-size: clamp(1.4rem, 3vw, 2.1rem);
+  letter-spacing: -0.025em; text-transform: uppercase; color: var(--color-text);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.work-row .dist { font-family: var(--font-heading); font-weight: 600; font-size: 14px; color: var(--color-text); }
+.work-row .st {
+  font-family: var(--font-heading); font-weight: 600; font-size: 11px; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--color-neutral-600);
+}
+/* Sur petit écran, les deux colonnes `auto` + le gap écrasaient le nom
+   (tronqué à deux lettres en 375px) : `sport · date` passe sous le nom,
+   qui garde toute la largeur restante de la première rangée. */
+@media (max-width: 639px) {
+  .work-row { grid-template-columns: 32px 1fr auto; gap: 4px 12px; }
+  .work-row .st { grid-column: 2 / -1; }
+}
+
+/* ---------- Liens flèche ---------- */
+.link-arrow {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-family: var(--font-heading); font-weight: 600; font-size: 12px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--color-text); cursor: pointer; width: fit-content; white-space: nowrap;
+}
+.link-arrow svg { transition: transform .3s var(--ease-out); }
+.link-arrow:hover { color: var(--color-accent); }
+.link-arrow:hover svg { transform: translateX(5px); }
+
+/* ---------- Layers (grille bordée) ---------- */
+.layers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  border-left: 1px solid var(--color-divider);
+}
+.layers-cellule {
+  padding: 24px;
+  border-right: 1px solid var(--color-divider);
+  border-top: 1px solid var(--color-divider);
+  border-bottom: 1px solid var(--color-divider);
+  transition: background .25s;
+}
+.layers-cellule.cliquable { cursor: pointer; }
+.layers-cellule.cliquable:hover, .layers-cellule.cliquable:focus-visible { background: var(--color-neutral-200); }
+.layers-cellule .nom {
+  font-family: var(--font-heading); font-weight: 800; font-size: 16px; letter-spacing: -0.01em; text-transform: uppercase;
+}
+.layers-cellule .desc { font-size: 13px; line-height: 1.5; color: var(--color-neutral-700); margin: 10px 0 0; }
+
+/* ---------- Tag (statuts Layers/Guidance) ---------- */
+.tag-v2 {
+  display: inline-flex; align-items: center;
+  font-family: var(--font-heading); font-weight: 600; font-size: 10px; letter-spacing: .08em; text-transform: uppercase;
+  padding: 3px 7px;
+}
+
+/* ---------- Guidance (écran analyses) ---------- */
+.guidance-ligne {
+  display: grid;
+  grid-template-columns: 190px 1fr auto;
+  gap: clamp(20px, 3vw, 44px);
+  align-items: baseline;
+  padding: 24px 0;
+  border-top: 1px solid var(--color-divider);
+}
+@media (max-width: 640px) {
+  .guidance-ligne { grid-template-columns: 1fr; gap: 8px; }
+  .guidance-ligne .tag-v2 { justify-self: start; }
+}
+
+/* ---------- Splits (page de détail de séance) ---------- */
+.split-ligne { display: flex; align-items: center; gap: 16px; padding: 12px 0; border-top: 1px solid var(--color-divider); }
+.split-piste { flex: 1; height: 10px; background: var(--color-neutral-200); position: relative; }
+.split-remplissage {
+  position: absolute; left: 0; top: 0; bottom: 0;
+  background: var(--color-text); transform-origin: left; animation: growX .8s var(--ease-out) both;
+}
+
+/* ---------- Formulaires (écran Saisie) ---------- */
+.field { margin-bottom: 22px; }
+.field > label {
+  display: block;
+  font-family: var(--font-heading); font-weight: 600; font-size: 11px; letter-spacing: .06em; text-transform: uppercase;
+  color: color-mix(in srgb, var(--color-text) 70%, transparent);
+  margin-bottom: 8px;
+}
+.input {
+  width: 100%; min-height: 40px; padding: 8px 10px; font: inherit; font-size: 14px;
+  color: var(--color-text); caret-color: var(--color-accent);
+  background: var(--color-surface); border: 1px solid var(--color-divider); border-radius: var(--radius-md);
+}
+.input:hover { border-color: color-mix(in srgb, var(--color-text) 45%, transparent); }
+.input:focus-visible { border-color: var(--color-accent); outline-offset: 0; }
+textarea.input { min-height: 90px; resize: vertical; }
+
+.seg {
+  display: inline-flex; overflow: hidden;
+  border: 1px solid var(--color-divider); border-radius: var(--radius-md);
+}
+.seg-opt {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 16px; cursor: pointer;
+  font-family: var(--font-heading); font-weight: 600; font-size: 12px; letter-spacing: .04em; text-transform: uppercase;
+}
+.seg-opt input { position: absolute; opacity: 0; width: 0; height: 0; pointer-events: none; }
+.seg-opt + .seg-opt { border-left: 1px solid var(--color-divider); }
+.seg-opt:has(input:checked) { background: var(--color-accent); color: var(--color-bg); }
+.seg-opt:not(:has(input:checked)):hover { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
+.seg-opt:has(input:focus-visible) { outline: 2px solid var(--color-accent); outline-offset: -2px; }
+
+/* ---------- Boutons (docs/design-cadence/modernist.css, verbatim) ------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  cursor: pointer; text-decoration: none;
+  font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-size: 14px; line-height: 1.2; color: var(--color-text);
+  background: transparent; border: 1px solid transparent;
+  padding: var(--space-2) calc(var(--space-3) * 1.2);
+  border-radius: var(--radius-md);
+  text-transform: uppercase; letter-spacing: .04em;
+}
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+.btn-primary { background: var(--color-accent); color: var(--color-bg); }
+.btn-primary:hover:not(:disabled) { background: var(--color-accent-600); }
+.btn-primary:active { background: var(--color-accent-700); }
+.btn-secondary { border-color: var(--color-divider); }
+.btn-secondary:hover:not(:disabled) { background: color-mix(in srgb, var(--color-text) 7%, transparent); }
+.btn-secondary:active { background: color-mix(in srgb, var(--color-text) 14%, transparent); }
+.btn-ghost { color: var(--color-accent); padding-inline: var(--space-1); }
+.btn-ghost:hover { background: color-mix(in srgb, var(--color-accent) 10%, transparent); }
+.btn-ghost:active { background: color-mix(in srgb, var(--color-accent) 18%, transparent); }
+.btn-block { width: 100%; margin-top: var(--space-2); justify-content: flex-start; text-align: left; }
+
+/* ---------- Footer-affiche (remplace le footer sombre MANA) ------------- */
+.footer-affiche {
+  background: var(--color-accent);
+  color: var(--color-bg);
+  padding: clamp(48px, 8vh, 88px) var(--gutter);
+  margin-top: auto;
+}
+.footer-affiche .titre {
+  /* Plancher 2rem et pente 9.5vw : le plancher 2.8rem de la maquette faisait
+     déborder « RECOMMENCER. » de 40px en 375px (page scrollable
+     horizontalement — retour l'utilisateur). Mesuré : ~8.4px de texte par px de corps,
+     335px utiles → corps max ~40px ; 9.5vw reste sous cette limite à toutes
+     les largeurs et atteint toujours le plafond 6.5rem en desktop. */
+  font-family: var(--font-heading); font-weight: 800; font-size: clamp(2rem, 9.5vw, 6.5rem);
+  letter-spacing: -0.04em; line-height: .92; text-transform: uppercase;
+}
+.footer-affiche .ligne-basse {
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px;
+  margin-top: clamp(32px, 5vh, 56px); padding-top: 20px;
+  border-top: 2px solid color-mix(in srgb, var(--color-bg) 40%, transparent);
+  font-family: var(--font-heading); font-weight: 600; font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 640px) {
+  .hdr { padding: 14px var(--gutter); }
+}
+
+/* ---------- Focus clavier visible (README Modernist) -------------------- */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}

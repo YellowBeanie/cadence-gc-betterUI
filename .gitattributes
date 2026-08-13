@@ -1,0 +1,10 @@
+# Fins de ligne forcées en LF.
+#
+# Sans ça, le autocrlf de Git sous Windows réécrirait entrypoint.sh et run.sh
+# en CRLF au checkout : bash sur le NAS échouerait alors avec des erreurs
+# « \r: command not found ». Autrement dit, un rollback produirait des scripts
+# cassés — exactement le contraire du but recherché.
+* text=auto eol=lf
+
+# Le patch doit rester octet pour octet identique, sinon il ne s'applique plus.
+*.patch -text
